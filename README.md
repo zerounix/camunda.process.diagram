@@ -9,21 +9,66 @@ important for our users.
 
 Source
 
-```java
-public enum DatabaseDialect {
-  ORACLE("org.hibernate.dialect.Oracle10gDialect"), 
-  MYSQL("org.hibernate.dialect.MySQLDialect"), 
-  HSQL("org.hibernate.dialect.HSQLDialect");
+```java server pages
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="de" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" 
+ng-app="processDiagrammApp">
 
-  private String dialectClass;
+<f:view contentType="text/html">
 
-  private DatabaseDialect(String dialectClass) {
-    this.dialectClass = dialectClass;
-  }
+	<f:metadata>
+		<f:viewParam name="p" />
+	</f:metadata>
 
-  public String getDialectClass() {
-    return dialectClass;
-  }
-}
+	<h:head>
+		<f:facet name="first">
+			<script src="lib/jquery/jquery-1.7.2.min.js"></script>
+			<script src="lib/require/require.min.js"></script>
+			<script src="lib/angular/angular.min.js"></script>
+			<script src="lib/angular/angular-resource.min.js"></script>
 
+			<script src="process.diagram.app.js"></script>
+		</f:facet>
+		<h:outputStylesheet library="css" name="bootstrap3.css" />
+	</h:head>
+	<h:body>
+		<div id="content" ng-controller="ProcessCtrl">
+			<h1>
+Prozessdiagramm zu Prozess mit der Id <small>#{p}</small>
+			</h1>
+			<div id="pid" style="display: none">#{p}</div>
+			<div id="engine" style="display: none">myengine</div>
+			<div id="diagramWrapper">
+				<div id="diagram" 
+process-diagram-overlay="processDiagramOverlay">
+</div>
+			</div>
+		</div>
+		<script>
+			require({
+				baseUrl: "./",
+				paths: {
+				  'jquery' : 'lib/jquery/jquery-1.7.2.min',
+				  'bpmn/Bpmn' : 'lib/bpmn/bpmn.min',
+				  'bootstrap' : 'lib/bootstrap/bootstrap3.min',				  
+				  'jquery-mousewheel' : 'lib/jquery/jquery.mousewheel',
+				  'jquery-overscroll' : 'lib/jquery/jquery.overscroll'
+				},
+				shim: {
+				 'jquery-mousewheel' : { deps: [ 'jquery' ] },
+				 'jquery-overscroll' : { deps: [ 'jquery' ] },
+				 'bootstrap' : { deps: [ 'jquery' ] },				 
+				},				      
+				packages: [
+				  { name: "dojo", location: "lib/dojo/dojo" },
+				  { name: "dojox", location: "lib/dojo/dojox"}
+				]
+		    });
+		</script>
+	</h:body>
+</f:view>
+</html>
 ```
