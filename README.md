@@ -1,11 +1,22 @@
-Processdiagram cookbook – or howto write your own highly customizable process diagram with almost now effort
+Processdiagram cookbook 
 =======================
-
+#howto write your own highly customizable process diagram with almost now effort
 Camunda recently released their great process sharing tool camunda Share 
 (Camunda Share - camunda.org/share, http://blog.camunda.org/2013/09/camunda-share-discuss-your-bpmn-20.html). 
 What a great addition to their stack - we thought - and how cool it would be to be able to visualize or processes 
 with or own process diagram. But we want it to be customizable. We would like to show the information we consider 
 important for our users.
+
+#So let’s do it on our own
+What do we need?
+We use JBoss server as runtime, so we get Rest Services and JSF for free. What else do we need?
+Camunda Rest-Engine – the Rest Engine serves the process diagrams and some history data to us
+Bootstrap 3 - http://getbootstrap.com/ - great, developer friendly styling and further useful components like popovers, which we will use in our diagram
+AngularJS - http://angularjs.org/ - AngularJS is a structural framework for dynamic web apps. It lets you use HTML as your template language and lets you extend HTML's syntax to express your application's components clearly and succinctly. Out of the box, it eliminates much of the code you currently write through data binding and dependency injection. And it all happens in JavaScript within the browser, making it an ideal partner with any server technology.
+Camunda BPMN JS - https://github.com/camunda/camunda-bpmn.js 
+Thanks to Nico Rehwaldt (http://camunda.org/community/team.html#nico-details) for that. This compact JS Library renders your process diagram to a SVG image and then adds an overlay to the HTML code which we can use to add CSS style classes and other useful things to it. Nico uses dojo and jQuery behind the scenes so we need those too. But no worries as there is a great little helper javascript library, requirJS, that sets up all the needed libs for us.
+So let’s start!
+To visualize the process we need the actual diagram in some form and the running process instance we want to display. As we serve our processes to many tenants and camunda bpm is able to handle that too, we also pass the tenant to the engine. 
 
 Source
 
