@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="de"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	ng-app="processDiagrammApp">
+
+<f:view contentType="text/html">
+
+	<f:metadata>
+		<f:viewParam name="p" />
+	</f:metadata>
+
+	<h:head>
+		<f:facet name="first">
+			<meta http-equiv="X-UA-Compatible" content="IE=8, IE=9" />
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<script src="lib/jquery/jquery-1.7.2.min.js"></script>
+			<script src="lib/require/require.min.js"></script>  	  					
+			<script src="lib/angular/angular.min.js"></script>
+			<script src="lib/angular/angular-resource.min.js"></script>		
+			
+			<script src="process.diagram.app.js"></script>
+		</f:facet>
+		<h:outputStylesheet library="css" name="bootstrap.css" />
+		<style>
+			#diagramWrapper {
+				padding: 10px;
+			}
+			.tx-boundary-before {
+			    border-left: 3px solid #B5152B;
+			}
+			
+			.label-position {
+			  margin-left: -1.1em;
+			  margin-top: -0.75em;
+			  left: 100%;
+			  position: absolute;
+			}
+			
+			.highlight  {
+			  -webkit-box-shadow: 0px 0px 4px 4px rgba(30, 144, 255, 1);
+			  -moz-box-shadow: 0px 0px 4px 4px rgba(30, 144, 255, 1);
+			  box-shadow: 0px 0px 4px 4px rgb(30, 144, 255);
+			  border-radius: 5px;
+			}			
+			
+			.highlight-active {
+			  -webkit-box-shadow: 0px 0px 4px 4px #47a447;
+			  -moz-box-shadow: 0px 0px 4px 4px #47a447;
+			  box-shadow: 0px 0px 4px 4px #47a447;
+			  border-radius: 5px;			
+			}
+			
+			.popover {
+    			max-width:450px;
+    			overflow: auto;
+			}			
+			
+			.bluebox {
+				background-color: blue;
+				color: white;
+			}
+			
+			.bpmn-diagram-node {
+				cursor: pointer;
+				position: absolute;
+				border-radius: 5px;
+				-moz-border-radius: 5px;
+			}
+			
+			.bpmn-diagram-node:hover {
+				border: 2px solid rgb(181, 21, 43);
+				background: rgba(181, 21, 43, 0.1);
+			}
+		</style>
+	</h:head>
+	<h:body>
+		<div id="content" ng-controller="ProcessCtrl">				
+			<h1>Prozessdiagramm zu Prozess mit der Id <small>#{p}</small></h1>
+			<div id="pid" style="display:none">#{p}</div>			
+			<div id="engine" style="display:none">hsehr</div>
+			<div id="diagramWrapper">						
+				<div id="diagram" process-diagram-overlay="processDiagramOverlay"></div>
+			</div>
+  		</div>		
+		<script>
+			require({
+				baseUrl: "./",
+				paths: {
+				  'jquery' : 'lib/jquery/jquery-1.7.2.min',
+				  'bpmn/Bpmn' : 'lib/bpmn/bpmn.min',
+				  'bootstrap' : 'lib/bootstrap/bootstrap3.min',				  
+				  'jquery-mousewheel' : 'lib/jquery/jquery.mousewheel',
+				  'jquery-overscroll' : 'lib/jquery/jquery.overscroll'
+				},
+				shim: {
+				 'jquery-mousewheel' : { deps: [ 'jquery' ] },
+				 'jquery-overscroll' : { deps: [ 'jquery' ] },
+				 'bootstrap' : { deps: [ 'jquery' ] },				 
+				},				      
+				packages: [
+				  { name: "dojo", location: "lib/dojo/dojo" },
+				  { name: "dojox", location: "lib/dojo/dojox"}
+				]
+		    });
+		</script>	
+	</h:body>
+</f:view>
+</html>
