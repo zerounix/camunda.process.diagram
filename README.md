@@ -1,4 +1,4 @@
-howto build a customizable process diagram
+Howto build a customizable process diagram
 ==========================================
 Camunda recently released their great process sharing tool [camunda Share] 
 (http://blog.camunda.org/2013/09/camunda-share-discuss-your-bpmn-20.html). 
@@ -6,7 +6,7 @@ What a great addition to their software stack.
 How cool it would be to be able to visualize your processes with your own process diagram. 
 But we want it to be customizable. We would like to show the information we consider important for our users.
 
-![process diagram result]()
+[process diagram result](https://raw.github.com/zerounix/camunda.process.diagram/master/src/main/dia.PNG)
 
 #So why not do it on our own
 What do we need?
@@ -18,7 +18,7 @@ We use JBoss server as runtime, so we get REST Services and JSF for free. What e
 * Camunda BPMN JS - https://github.com/camunda/camunda-bpmn.js 
 Thanks to [Nico Rehwaldt](http://camunda.org/community/team.html#nico-details). This compact JS Library renders your process diagram to a SVG image and then adds an overlay to the HTML code which we can use to add CSS style classes and other useful things to it. Nico uses dojo and jQuery behind the scenes so we need those too. But no worries as there is a great little helper javascript library, requirJS, that sets up all the needed libs for us.
 
-#So let’s start!
+#Let’s start!
 To visualize the process we need the actual diagram in some form and the running process instance we want to display. 
 
 All that information can be received by the camunda rest engine with the following calls:
@@ -191,7 +191,7 @@ data to the diagram application.
 
 This is pretty straightforeward:
 
-* Activate REST for your webapp for example like this under the url /process-rest/ by creating the following class
+* Activate REST for your webapp for example like this under the url **/process-rest/** by creating the following class
 
 ``` java
 package de.countandcare.fox.rest;
@@ -205,7 +205,7 @@ public class RESTActivator extends Application {
 }
 ```
 
-* Now serve the wanted data under the url /instance/<pid>/engine/<enginename> and /instance/historic/<pid>/engine/<enginename>
+* Now serve the wanted data under the url **/instance/<pid>/engine/<enginename>** and **/instance/historic/<pid>/engine/<enginename>**
 
 ``` java
 package de.countandcare.fox.rest;
@@ -307,4 +307,43 @@ public class ProcessDiagramRestService implements Serializable {
 ```
 
 # display your data in the process diagram
+So let's go back to the angular controller and display the new data to the user.
+
+``` html
+	$scope.ids = [];
+	$http.get('/engine-rest/engine/' + $scope.engine + '/process-instance/' + $scope.pid 
+		+ '/activity-instances/').success(function(data) {
+		$scope.ids.push(data.activityId);
+	    childActivities($scope.ids, data);		      		
+	}).then(function() {
+		angular.forEach($scope.ids, function(value,key){
+			$http.get('/<your application url>/process-rest/instance/' + $scope.pid 
+				+ '/engine/' + $scope.engine).success(function(data) {
+				$scope.task = data;		    	  		      	
+			}).then(function() {
+				doAnnotate($scope.task.id, 1, 'label-success', 
+					['highlight-active'], popoverContentCurrentTask($scope.task));
+			});
+		});		    	  		    	  
+	});
+```
+
+With the first $http.get call we query for the activity instances of the process. These then will be save to an array called $scope.ids.
+As there is the possibility to have activities in subprocesses we do some recursion with the function **childActivities**. 
+
+``` html
+function childActivities(ids, parent) {
+	if (parent && parent.childActivityInstances) {
+		for (var i = 0, l = parent.childActivityInstances.length; i < l; ++i) {
+			var child = parent.childActivityInstances[i];
+			$scope.ids.push(child.activityId);		    	            
+			childActivities(ids, child);
+		}
+	}
+} 
+```
+
+As you cann see my javascript code kills little angels :-)
+
+If everything worked we now go through the list of activities and add some css and javascript magic to it.
 
