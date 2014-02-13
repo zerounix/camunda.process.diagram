@@ -6,7 +6,7 @@ What a great addition to their software stack.
 How cool it would be to be able to visualize your processes with your own process diagram. 
 But we want it to be customizable. We would like to show the information we consider important for our users.
 
-![process diagram result](https://raw.github.com/zerounix/camunda.process.diagram/master/src/main/dia.PNG)
+[process diagram result](https://raw.github.com/zerounix/camunda.process.diagram/master/src/main/dia.PNG)
 
 #So why not do it on our own
 What do we need?
@@ -345,5 +345,78 @@ function childActivities(ids, parent) {
 
 As you cann see my javascript code kills little angels :-)
 
-If everything worked we now go through the list of activities and add some css and javascript magic to it.
+If everything worked we now go through the list of activities and get the extra information we provide with our custom REST services from above:
 
+``` javascript
+	angular.forEach($scope.ids, function(value,key){
+		$http.get('/<your application url>/process-rest/instance/' + $scope.pid 
+			+ '/engine/' + $scope.engine).success(function(data) {
+			$scope.task = data;		    	  		      	
+		}).then(function() {
+			doAnnotate($scope.task.id, 1, 'label-success', 
+				['highlight-active'], popoverContentCurrentTask($scope.task));
+		});
+	});		 
+```
+
+The new information we then add with the function **doAnnotate** as overlay to the bpmn diagram onto the page:
+
+``` javascript
+function doAnnotate(activityId, count, labelStyle, styleClasses, popoverHtml) {
+  executeAnnotation(activityId, '<span class="label ' + labelStyle + '">1</span>', styleClasses, popoverHtml);
+}
+
+function executeAnnotation(activityId, innerHtml, styleClasses, popoverHtml) {
+  // in that case there no badges are existings, so the first one will initially added.
+  try {
+	var annotation = bpmn.annotation(activityId);
+	annotation.addClasses(styleClasses);
+	annotation.addDiv(innerHtml, ['label-position']);
+	annotation.addDiv(popoverHtml, []);
+  } catch (error) {
+	  console.log('Could not annotate activity \'' + activityId + '\': ' + error.message);
+  }
+}    
+```
+
+The doAnnotate function adds to each activity a **span**. We furthermore add the extra data to another **div,** which we will display
+as a bootstrap popover onclick on the span.
+
+Here the code for the onclick bootstrap popover stuff:
+
+``` javascript 
+/*-------------- Click Handlers ------------------*/
+var registerEventHandlers = function (elementId) {    				
+	var overlay = bpmn.getOverlay(elementId);				
+	
+	if (overlay) {					  
+		overlay							
+		// register click and load popover content
+		.click(elementId, function ($event) {   						
+			// hide the last selected element (if existant) 
+			if ($scope.selectedElement && $scope.selectedElement!=elementId) {
+				$scope.closePopup();
+			}
+			// now the new one
+			$scope.selectedElement = elementId;
+			$scope.$apply();
+		})
+		// show popover
+		.popover({
+			  html: true,
+			  title:"Prozessinformation",
+			  content :  function() {
+				  return $('#popoverContent' + elementId).html();       				             
+			  },
+			  container: "body"
+		});						
+	}
+};
+```
+
+Depending on the kind of activity, if it is the current active one or already processed activity, we use different css classes. 
+Blue border means already processed and green border is the currently active one. As the content of the popover also differs here
+we provide two different functions **popoverContentCurrentTask(data)** and **popoverContent(data))** for processing the content.
+
+# Contribute!
+If you like it use it and let me know. Or maybe fix some of the uglier parts? :)
