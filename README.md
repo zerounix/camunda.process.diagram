@@ -1,12 +1,12 @@
 Howto build a customizable process diagram
 ==========================================
 Camunda recently released their great process sharing tool [camunda Share] 
-!(http://blog.camunda.org/2013/09/camunda-share-discuss-your-bpmn-20.html). 
+(http://blog.camunda.org/2013/09/camunda-share-discuss-your-bpmn-20.html). 
 What a great addition to their software stack. 
 How cool it would be to be able to visualize your processes with your own process diagram. 
 But we want it to be customizable. We would like to show the information we consider important for our users.
 
-[process diagram result](https://raw.github.com/zerounix/camunda.process.diagram/master/src/main/dia.PNG)
+![process diagram result](https://raw.github.com/zerounix/camunda.process.diagram/master/src/main/dia.PNG)
 
 #So why not do it on our own
 What do we need?
