@@ -6,6 +6,8 @@ What a great addition to their software stack.
 How cool it would be to be able to visualize your processes with your own process diagram. 
 But we want it to be customizable. We would like to show the information we consider important for our users.
 
+![process diagram result]()
+
 #So why not do it on our own
 What do we need?
 We use JBoss server as runtime, so we get REST Services and JSF for free. What else do we need?
@@ -143,6 +145,46 @@ This imports jquery, the camunda.bpmn.js lib, bootstrap, mousewheel libs for scr
 and we are ready to go when it comes to setup and dependencies. You will find this to be pretty similar
 to camundas share application ;).
 
+# The angularjs controller - process.diagram.app.js
+First of all let's get the two most important variables we need passed to the jsf page, namely the process id and the name of the process engine we want to
+query:
+
+``` html
+	$scope.pid = $('#pid').text();
+    $scope.engine = $('#engine').text();
+```
+
+Now we query camundas REST engine with the process id to retrieve the definition id of the actual process:
+
+``` html
+	// get process definition and id
+    $http.get('/engine-rest/engine/' + $scope.engine + '/process-instance/' 
+		+ $scope.pid).success(function(data) {
+    	$scope.definitionId = data.definitionId;
+    }).then(function() { 
+	...
+```
+
+With the definition id we can query camundas REST engine to get the XML representation of the process:
+
+``` html
+	// load process xml data
+    $http.get('/engine-rest/engine/' + $scope.engine + '/process-definition/' + $scope.definitionId + '/xml').success(function(data) {
+    	$scope.processXml = data;
+    });
+```
+
+Now we can draw the process diagram with the help of camundas bpmn.js lib to the div we defined in our jsf page with the id diagram:
+
+``` html
+	var bpmn = new Bpmn();	      	      	      
+	bpmn.render($scope.processXml.bpmn20Xml, {diagramElement : "diagram"});
+```
+
+``` html
+	<div id="diagram" process-diagram-overlay="processDiagramOverlay"></div>
+```
+
 # Add your data to the diagram
 To enhance the application we need to provide our information to the diagram. Therefore we create a REST service to serve the
 data to the diagram application.
@@ -263,3 +305,6 @@ public class ProcessDiagramRestService implements Serializable {
   
 }
 ```
+
+# display your data in the process diagram
+
