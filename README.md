@@ -149,14 +149,14 @@ to camundas share application ;).
 First of all let's get the two most important variables we need passed to the jsf page, namely the process id and the name of the process engine we want to
 query:
 
-``` html
+``` javascript
 	$scope.pid = $('#pid').text();
     $scope.engine = $('#engine').text();
 ```
 
 Now we query camundas REST engine with the process id to retrieve the definition id of the actual process:
 
-``` html
+``` javascript
 	// get process definition and id
     $http.get('/engine-rest/engine/' + $scope.engine + '/process-instance/' 
 		+ $scope.pid).success(function(data) {
@@ -167,7 +167,7 @@ Now we query camundas REST engine with the process id to retrieve the definition
 
 With the definition id we can query camundas REST engine to get the XML representation of the process:
 
-``` html
+``` javascript
 	// load process xml data
     $http.get('/engine-rest/engine/' + $scope.engine + '/process-definition/' + $scope.definitionId + '/xml').success(function(data) {
     	$scope.processXml = data;
@@ -176,7 +176,7 @@ With the definition id we can query camundas REST engine to get the XML represen
 
 Now we can draw the process diagram with the help of camundas bpmn.js lib to the div we defined in our jsf page with the id diagram:
 
-``` html
+``` javascript
 	var bpmn = new Bpmn();	      	      	      
 	bpmn.render($scope.processXml.bpmn20Xml, {diagramElement : "diagram"});
 ```
@@ -309,7 +309,7 @@ public class ProcessDiagramRestService implements Serializable {
 # display your data in the process diagram
 So let's go back to the angular controller and display the new data to the user.
 
-``` html
+``` javascript
 	$scope.ids = [];
 	$http.get('/engine-rest/engine/' + $scope.engine + '/process-instance/' + $scope.pid 
 		+ '/activity-instances/').success(function(data) {
@@ -331,7 +331,7 @@ So let's go back to the angular controller and display the new data to the user.
 With the first $http.get call we query for the activity instances of the process. These then will be save to an array called $scope.ids.
 As there is the possibility to have activities in subprocesses we do some recursion with the function **childActivities**. 
 
-``` html
+``` javascript
 function childActivities(ids, parent) {
 	if (parent && parent.childActivityInstances) {
 		for (var i = 0, l = parent.childActivityInstances.length; i < l; ++i) {
