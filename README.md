@@ -343,7 +343,7 @@ function childActivities(ids, parent) {
 } 
 ```
 
-As you cann see my javascript code kills little angels :-)
+As you can see my javascript code kills little kittens :-)
 
 If everything worked we now go through the list of activities and get the extra information we provide with our custom REST services from above:
 
