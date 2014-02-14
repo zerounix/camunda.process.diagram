@@ -23,8 +23,8 @@ To visualize the process we need the actual diagram in some form and the running
 
 All that information can be received by the camunda rest engine with the following calls:
 
-* Process defintion: /engine-rest/engine/<ENGINENAME>/process-instance/<PID> -> returns the definition id of the diagram we now can use
-* Process diagram as XML: /engine-rest/engine/<ENGINENAME>/process-definition/<DEFINITION_ID>/xml
+* Process defintion: /engine-rest/engine/**ENGINENAME**/process-instance/<PID> -> returns the definition id of the diagram we now can use
+* Process diagram as XML: /engine-rest/engine/**ENGINENAME**/process-definition/<DEFINITION_ID>/xml
 
 As we serve our processes to many tenants and camunda bpm is able to handle that too, we also pass the tenant to the engine (see ENGINENAME above).
 
@@ -205,7 +205,7 @@ public class RESTActivator extends Application {
 }
 ```
 
-* Now serve the wanted data under the url **/instance/<pid>/engine/<enginename>** and **/instance/historic/<pid>/engine/<enginename>**
+* Now serve the wanted data under the url **/instance/<pid>/engine/ENGINENAME** and **/instance/historic/<pid>/engine/ENGINENAME**
 
 ``` java
 package de.countandcare.fox.rest;
@@ -317,7 +317,7 @@ So let's go back to the angular controller and display the new data to the user.
 	    childActivities($scope.ids, data);		      		
 	}).then(function() {
 		angular.forEach($scope.ids, function(value,key){
-			$http.get('/<your application url>/process-rest/instance/' + $scope.pid 
+			$http.get('/**your application url**/process-rest/instance/' + $scope.pid 
 				+ '/engine/' + $scope.engine).success(function(data) {
 				$scope.task = data;		    	  		      	
 			}).then(function() {
@@ -349,7 +349,7 @@ If everything worked we now go through the list of activities and get the extra 
 
 ``` javascript
 	angular.forEach($scope.ids, function(value,key){
-		$http.get('/<your application url>/process-rest/instance/' + $scope.pid 
+		$http.get('/**your application url**/process-rest/instance/' + $scope.pid 
 			+ '/engine/' + $scope.engine).success(function(data) {
 			$scope.task = data;		    	  		      	
 		}).then(function() {
